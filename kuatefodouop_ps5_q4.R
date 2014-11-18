@@ -17,3 +17,7 @@ dl <- dlply(loads, .(time), function(x) {
 y <- matrix(unlist(dl), nrow=7, byrow=F)
 
 save(y, file="./dat/1rout_y.dat")
+
+
+load("./out/theta_iid.dat")
+
