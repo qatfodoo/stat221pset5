@@ -1,4 +1,0 @@
-Error in save(theta, "./out/theta_iid.dat") : 
-  object ‘./out/theta_iid.dat’ not found
-Execution halted
-tunnel: unable to read file /tmp/(null)-host.tunnel. You may need to manually kill ssh tunnel processes.
