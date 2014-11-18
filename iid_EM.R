@@ -54,14 +54,14 @@ RoutingMatrix <- function(I=16) {
 }
 
 # Fractional N-R on lambda, phi
-FracNR <- function(a, b, phi0, I=16, tol=1e-2) {
+FracNR <- function(a, b, phi0, I.par=16, tol=1e-2) {
   
   phi <- phi0
   lambda <- matrix(data=0, nrow=1, ncol=I)
   err <- 1
   n.iter <- 0
   
-  while (err > tol) {
+  while (abs(err) > tol) {
     n.iter <- n.iter + 1
     
     # Optimal lambda for phi
@@ -69,19 +69,19 @@ FracNR <- function(a, b, phi0, I=16, tol=1e-2) {
     
     # f component
     f.k <- f(a, b, lambda, phi)
-    f_Iplus1 <- f.k[I + 1]
+    f_Iplus1 <- f.k[I.par + 1]
     err <- f_Iplus1
     
     # Jacobian
     F.diag <- c(4 * phi / lambda + 2 * b, 0)
     F <- diag(F.diag)
-    F[I + 1, 1:I] <- b / lambda
-    F[1:I, I + 1] <- 2 * lambda^2
+    F[I.par + 1, 1:I.par] <- b / lambda
+    F[1:I.par, I.par + 1] <- 2 * lambda^2
     # Compute F inverse
     F.inv <- solve(F)
     
     # NR step
-    step <- - F.inv[I + 1, I + 1] * f_Iplus1
+    step <- - F.inv[I.par + 1, I.par + 1] * f_Iplus1
     t <- 1
     phi.next <- -1
     while (phi.next < 0) {
@@ -95,7 +95,7 @@ FracNR <- function(a, b, phi0, I=16, tol=1e-2) {
   
   print("number of iters: ")
   print(n.iter)
-  return(matrix(data=c(lambda, phi), nrow=(I + 1), ncol=1))
+  return(matrix(data=c(lambda, phi), nrow=(I.par + 1), ncol=1))
   
 }
 
