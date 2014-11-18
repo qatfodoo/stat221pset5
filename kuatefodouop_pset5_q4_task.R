@@ -20,7 +20,7 @@ if (Sys.getenv("SLURM_JOB_ID") != "") { # Divide computation per tasks
   
   theta <- EMiid(y, m.step=5)
   
-  save(theta, "./out/theta_iid.dat")
+  save(theta, file="./out/theta_iid.dat")
   
   t2.sim <- as.numeric(Sys.time())
   dt.sim <- (t2.sim - t1.sim) / 60 # dt in min
