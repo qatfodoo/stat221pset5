@@ -2,11 +2,11 @@
 ## Implement the EM algorithm for the iid model and c=2
 
 # Try to implement the EM, using fractional Newton-Raphson
-EMiid <- function(y, I.par=16, A=RoutingMatrix(16), m.step=100) {
+EMiid <- function(y, I.par=16, A=RoutingMatrix(16), m.step=1000) {
   
   T.y <- dim(y)[2]
   # Initial guess
-  theta <- matrix(data=1, nrow=(I.par + 1), ncol=1)
+  theta <- matrix(data=c(rep(10000, I.par), 1), nrow=(I.par + 1), ncol=1)
   q.list <-c()
   
   for (k in 1:m.step) {
@@ -19,21 +19,13 @@ EMiid <- function(y, I.par=16, A=RoutingMatrix(16), m.step=100) {
       (y - replicate(T.y, (A %*% lambda), simplify=T))
     R <- sigma - sigma %*% t(A) %*% solve(A %*% sigma %*% t(A)) %*% A %*% sigma
     
-    a <- diag(R) + (1 / T.y) * diag(m %*% t(m))
-    b <- rowMeans(m)
-    
     # Current expectation and gradient
     min_Q.k <- function(theta) {
       return( - Q(theta, m, R))
     }
-    min_f.k <- function(theta) {
-      lambda <- theta[1:I.par]
-      phi <- theta[I.par + 1]
-      
-      return( - f(a, b, lambda, phi))
-    }
+    
     opt.k <- optim(theta, min_Q.k, method=c("L-BFGS-B"), 
-                   lower=0.1, upper=Inf, control=list(maxit=10000))
+                   lower=1e-5, upper=Inf, control=list(maxit=10000))
     theta <- opt.k$par
     Q.par <- Q(theta, m, R)
     q.list <- c(q.list, Q.par) # Sequence of conditional expectation

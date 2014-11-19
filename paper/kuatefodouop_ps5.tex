@@ -144,8 +144,7 @@ In this homework we use an implementatin of the Expectation-Maximization (EM) al
 
 \begingroup
 \centering
-\includegraphics[scale=0.50]{./img/linkload_rout1.png}
-\captionof{figure}{Link loads on different node of router 1's subnetwork, replicating Cao et al. figure 2.}
+\includegraphics[scale=0.50]{./img/linkload_rout1.png}\captionof{figure}{Link loads on different node of router 1's subnetwork, replicating Cao et al. figure 2.}
 \endgroup
 
 \textit{question 1.2} We replicate figure 4 of the paper with \texttt{1router\_allcount.dat}, of log variance against log mean in two time windows of 55 minutes. Linear fits are plotted for unfixed slope and slopes fixed at $c = 1$ and $c=2$. From the plot $c=2$ seems to give better regression results.
@@ -302,9 +301,47 @@ We actually have
 \begin{align*}
 p(\eta_t | \tilde{Y}_{t}) = p(\eta_t | \tilde{Y}_{t - 1}, Y_t) \propto p(\eta_t | \tilde{Y}_{t - 1}) p(Y_t | \eta_t)
 \end{align*}
-Using Baye's rule.
+Using Baye's rule. Hence we now want to maximize the log posterior distribution (removing additive constants)
+\begin{align*}
+g(\eta_t) = log\left(\pi_t(\eta_t)\right) + log\left(p(Y_t | \eta_t)\right)
+\end{align*}
+Where $\pi_t(\eta_t) = p(\eta_t | \tilde{Y}_{t - 1})$ prior at time $t$, and $log\left(p(Y_t | \eta_t)\right) = log\left(p(Y_t | \theta_t)\right)$ is what we were trying to maximize in the previous local EM algorithm.\\
 
+This modifies our EM algorithm by adding a constant (in that it does not depend on the data) prior component to the $Q$ expectation function, ie.
+\begin{align*}
+Q(\theta, \theta_t^{(k)}) = Q_{local}(\theta, \theta_t^{(k)}) + log\left(\pi_t(log(\theta))\right)
+\end{align*}
+Hence we just need to come up with the expression of $log\left(\pi_t(\eta_t)\right)$ to modify our E-step, and optimize the new Q for our M-step.\\
 
+Integrating on all values of former step states, we have
+\begin{align*}
+\pi_t(\eta_t) = \int p(\eta_{t - 1} | \tilde{Y}_{t - 1}) p(\eta_t | \eta_{t - 1}) d\eta_{t -1 }
+\end{align*}
+With $\eta_t | \eta_{t - 1} \sim Normal(\eta_{t - 1}, V)$. The paper approximates the former state posterior as a normal distribution, ie. $\eta_{t - 1} | \tilde{Y}_{t - 1} \sim Normal(\hat{\eta}_{t - 1}, \hat{\Sigma}_{t -1 })$, where $\hat{\eta}_{t - 1}$ is the previous state posterior mode and $\hat{\Sigma}_{t -1 } = \ddot{g}(\hat{\eta}_t)^{-1}$ (local normal approximation). So the integral for the prior gives us
+\begin{align*}
+\pi_t(\eta_t) = Normal(\hat{\eta}_{t - 1}, \hat{\Sigma}_{t - 1} + V)
+\end{align*}
+So that we obtain a $Q$ expectation function
+\begin{eqnarray}
+Q(\theta, \theta_t^{(k)}) = Q_{local}(\theta, \theta_t^{(k)}) + log\left(dnorm\left(log(\theta), \hat{\eta}_{t - 1}, \hat{\Sigma}_{t - 1} + V\right)\right) 
+\end{eqnarray}
+And the refined model EM algorithm proceeds as follows:\\
+
+\vspace{.2 in}
+\begin{algorithm}[H]
+ \KwData{Observed link loads Y.}
+ \KwResult{MAP of parameters $\theta_t$.}
+ \For{t=1 \emph{\KwTo} T}{
+ initialization: $\theta_t = \theta_0$ positive parameter.\\
+ \While{$|Q(\theta_t^{(k + 1}, \theta_t^{(k)}) - Q(\theta_t^{(k)}, \theta_t^{(k - 1)})| > \epsilon$}{
+  - Update step: k = k + 1\\
+  - E-step: Compute $m_t^{(k)}, R^{(k)}, a_i^{(k)}, b_i^{(k)}, \hat{\eta}_{t - 1}, \hat{\Sigma}_{t - 1}$ (using numerical methods for the Hessian).\\
+  - M-step: Update $\theta_t$ using constrained \texttt{optim} optimization (ensures parameters positive) on the Q function defined in (3).
+  }
+ }
+ \caption{EM algorithm for refined model}
+\end{algorithm}
+\vspace{.2 in}
 %----------------------------------------------------------------------------------------
 
 %\end{multicols}

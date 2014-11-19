@@ -1,16 +1,4 @@
-slurmstepd: error: *** JOB 25005585 CANCELLED AT 2014-11-19T14:43:19 *** on holy2a05101
-slurmstepd: error: *** JOB 25005593 CANCELLED AT 2014-11-19T14:43:19 *** on holy2a08301
-zer/slurm/uid_556704/job_25005588/step_batch: Device or resource busy
-slurmstepd: error: *** JOB 25005589 CANCELLED AT 2014-11-19T14:43:19 *** on holy2a06204
-zer/slurm/uid_556704/job_25005585/step_batch: Device or resource busy
-slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freeslurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556704/job_25005589/step_batch: Device or resource busy
-slurmstepd: error: *** JOB 25005596 CANCELLED AT 2014-11-19T14:43:19 *** on holy2a11106
-slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556704/job_25005596/step_batch: Device or resource busy
- path /cgroup/freezer/slurm/uid_556704/job_25005597/step_batch: Device or resource busy
-slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556704/job_25005586/step_batch: Device or resource busy
-slurmstepd: error: *** JOB 25005595 CANCELLED AT 2014-11-19T14:43:19 *** on holy2a03103
-slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556704/job_25005595/step_batch: Device or resource busy
-slurmstepd: error: *** JOB 25005599 CANCELLED AT 2014-11-19T14:43:20 *** on holy2a06102
-slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556704/job_25005599/step_batch: Device or resource busy
-slurmstepd: error: *** JOB 25005600 CANCELLED AT 2014-11-19T14:43:20 *** on holy2a11108
-slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556704/job_25005594/step_batch: Device or resource busy
+Error in solve.default(sigma) : 
+  system is computationally singular: reciprocal condition number = 3.3e-19
+Calls: EMiid ... optim -> <Anonymous> -> fn -> Q -> solve -> solve.default
+Execution halted
