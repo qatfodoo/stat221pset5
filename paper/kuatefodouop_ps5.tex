@@ -287,10 +287,22 @@ We extend the basic iid model to a local idd model, by setting time moving windo
 \begin{align*}
 y_{t - h}, ..., y_{t + h} \sim Normal(A \lambda_t, A \Sigma_t A' )
 \end{align*}
-With $\Sigma_t = \phi_t diag(\lambda_t^2)$.
+With $\Sigma_t = \phi_t diag(\lambda_t^2)$. On each of those windowed data set, the MLE parameter $\theta_t$ is fitted using the previously derived iid model EM.
 
 \vspace{.2 in}
-\textit{question 1.5} We derive the EM algorithm for the refined model of the paper's fourth section.\\
+\textit{question 1.5} We derive the EM algorithm for the refined model of the paper's fourth section. This refined model adds smoothing to the estimates by considering the parameters as following hidden markov model, resulting in an algorithm similar to the Kalman Filter.\\
+
+$\eta_t = (log(\lambda_t), log(\phi_t))$ is modeled as a random walk state
+\begin{align*}
+\eta_t = \eta_{t - 1} + v_t
+\end{align*} 
+With $v_t \sim Normal(0, V)$, and V fixed variance matrix. We denote all the current information until time $t + h$ by $\tilde{Y_{t}} = (y_1, ..., y_{t + h})$, and the window data set at time t $Y_t$. The goal of our EM algorithm is to find the MAP estimator, ie. the mode of the posterior distribution $p(\eta_t | \tilde{Y_{t}})$.\\
+
+We actually have
+\begin{align*}
+p(\eta_t | \tilde{Y}_{t}) = p(\eta_t | \tilde{Y}_{t - 1}, Y_t) \propto p(\eta_t | \tilde{Y}_{t - 1}) p(Y_t | \eta_t)
+\end{align*}
+Using Baye's rule.
 
 
 %----------------------------------------------------------------------------------------

@@ -35,7 +35,7 @@ if (Sys.getenv("SLURM_JOB_ID") != "") { # Divide computation per tasks
     t <- win.id[i]
     y.t <- win[[t]]
     theta.part[[i]]$t <- t
-    theta.part[[i]]$theta <- EMiid(y.t, m.step=100)
+    theta.part[[i]]$theta <- EMiid(y.t, m.step=1000)
   }
   
   save(theta.part, file=paste("./out/theta_part_", task.id, ".dat", sep=""))
