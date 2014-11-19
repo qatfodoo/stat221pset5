@@ -9,18 +9,36 @@ if (Sys.getenv("SLURM_JOB_ID") != "") { # Divide computation per tasks
   print(paste("Job id", job.id, sep=": "))
   task.id <- as.numeric(Sys.getenv("SLURM_ARRAY_TASK_ID"))
   print(paste("Task id", task.id, sep=": "))
-  #data.id <- task.id %% 2 + 1 # Set of data considered
-  #data.name <- data.names[data.id]
-  #chain.id <- ceiling(task.id / 2) # Chain id for data set
   
   gc() # garbage collection
   load("./dat/1rout_y.dat")
   
+  I.par <- 16
+  ## Compute local datasets
+  h <- 5
+  w <- 2 * h + 1
+  T.y <- dim(y)[2]
+  N.t <- T.y - 2 * h
+  
+  win <- replicate(N.t, matrix(data=0, nrow=7, ncol=w), simplify=F)
+  for (t in 1:N.t) {
+    win[[t]] <- y[, t:(t + w - 1)]
+  }
+  
   t1.sim <- as.numeric(Sys.time())
   
-  theta <- EMiid(y, m.step=5)
+  win.id <- seq(from=task.id, to=N.t, by=30)
+  theta.part <- replicate(length(win.id), list(t=0,
+                            theta=matrix(data=0, nrow=I.par + 1, ncol=1)), simplify=F)
   
-  save(theta, file="./out/theta_iid.dat")
+  for (i in 1:length(win.id)) {
+    t <- win.id[i]
+    y.t <- win[[t]]
+    theta.part[[i]]$t <- t
+    theta.part[[i]]$theta <- EMiid(y.t, m.step=100)
+  }
+  
+  save(theta.part, file=paste("./out/theta_part_", task.id, ".dat", sep=""))
   
   t2.sim <- as.numeric(Sys.time())
   dt.sim <- (t2.sim - t1.sim) / 60 # dt in min

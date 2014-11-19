@@ -245,27 +245,22 @@ We hence derive the steps of the EM algorithm for our iid model.\\
   - M-step
   \eIf{c = 1 or c = 2}{
    1. Solve (1) for $\lambda$ analytically given $\phi$ (positive solution).\\
-   2. Solve for $\phi$ using fractional steps Newton-Raphson (ensures $\phi$ positive).
+   2. Solve for $\phi$ using fractional steps Newton-Raphson or constrained \texttt{optim} optimization (ensures $\phi$ positive).
    }{
-   Update $\theta$ using fractional steps Newton-Raphson, to ensure positive parameter.
+   Update $\theta$ using constrained \texttt{optim} optimization (ensures parameters positive).
   }
  }
  \caption{EM algorithm for iid model}
 \end{algorithm}
 \vspace{.2 in}
 
-\textit{question 1.4} We extend the basic iid model to a local idd model, by setting time moving windows in which observations are treated iid.
-\begin{align*}
-y_{t - h}, ..., y_{t + h} \sim Normal(A \lambda_t, A \Sigma_t A' )
-\end{align*}
-
-We fix the variance and window frame paramters to be $c = 2$, $w=11$. The MLE equations (1) then becomes
+\textit{question 1.4} We fix the variance and window frame paramters to be $c = 2$ (most appropriate according to exploratory data analysis), $w=11$. The MLE equations (1) then becomes
 \begin{align*}
 \phi \lambda_i^{2} + \lambda_i b_i^{(k)} - a_i^{(k)} = 0 &  \quad i = 1...I \\
 \end{align*}
 Which gives us a positive solution (the biggest of the two roots of the equation) for $\lambda_i$ given $\phi$
 \begin{align*}
-\lambda^*_i = \frac{\sqrt{(b_i^{(k)})^2 + 4 \phi a_i^{(k)}} - b_i^{(k)}}{2 \phi}
+\lambda^{(k + 1)}_i = \frac{\sqrt{(b_i^{(k)})^2 + 4 \phi^{(k)} a_i^{(k)}} - b_i^{(k)}}{2 \phi^{(k)}}
 \end{align*}
 Setting $\lambda$ to those values, we have $f_i(\theta) = 0$ for $i = 1..I$ where $f(\theta)$ is the left hand-side of equations (1) and (2), so that the one-step Newton-Raphson algorithm
 \begin{align*}
@@ -286,6 +281,18 @@ And the Jacobian $F ( \theta^{(k)})$ defined by
 & \frac{\partial f_i}{\partial \phi} = 2 \lambda_i^2\\
 & \frac{\partial f_{I + 1}}{\partial \phi} = 0\\
 \end{align*}
+To solve the M-step of our EM algorithm, we adopt an iterative fractional Newton-Raphson method, by dividing the step in the former udpate of $\phi$ by bigger and bigger integer if the update is negative. However this approach failed to converge fast enough (steps are too small), and we falled back on an \texttt{optim} optimization method.
+\vspace{.2 in}
+We extend the basic iid model to a local idd model, by setting time moving windows in which observations are treated iid.
+\begin{align*}
+y_{t - h}, ..., y_{t + h} \sim Normal(A \lambda_t, A \Sigma_t A' )
+\end{align*}
+With $\Sigma_t = \phi_t diag(\lambda_t^2)$.
+
+\vspace{.2 in}
+\textit{question 1.5} We derive the EM algorithm for the refined model of the paper's fourth section.\\
+
+
 %----------------------------------------------------------------------------------------
 
 %\end{multicols}
