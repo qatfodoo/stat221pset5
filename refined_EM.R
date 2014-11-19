@@ -41,7 +41,7 @@ EMref <- function(y, V, I.par=16, A=RoutingMatrix(I.par=16), m.steps=1000) {
         return( - Q.ref(theta, m, R, eta, sigma.hat, V))
       }
       opt.k <- optim(theta, min_Q.k, method=c("L-BFGS-B"), 
-                     lower=1e-5, upper=Inf, control=list(maxit=1000))
+                     lower=0.1, upper=Inf, control=list(maxit=1000))
       theta <- opt.k$par
       Q.par <- Q.ref(theta, m, R, eta, sigma.hat, V)
       q.list <- c(q.list, Q.par) # Sequence of conditional expectation
