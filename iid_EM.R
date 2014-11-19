@@ -25,7 +25,7 @@ EMiid <- function(y, I.par=16, A=RoutingMatrix(16), m.step=1000) {
     }
     
     opt.k <- optim(theta, min_Q.k, method=c("L-BFGS-B"), 
-                   lower=1e-5, upper=Inf, control=list(maxit=10000))
+                   lower=0.1, upper=Inf, control=list(maxit=10000))
     theta <- opt.k$par
     Q.par <- Q(theta, m, R)
     q.list <- c(q.list, Q.par) # Sequence of conditional expectation
