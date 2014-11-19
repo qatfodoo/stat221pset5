@@ -27,7 +27,7 @@ if (Sys.getenv("SLURM_JOB_ID") != "") { # Divide computation per tasks
   
   t1.sim <- as.numeric(Sys.time())
   
-  m.step < 2000 # num of steps for EM
+  m.step <- 4000 # num of steps for EM
   
   win.id <- seq(from=task.id, to=N.t, by=30)
   theta.part <- replicate(length(win.id), list(t=0,
