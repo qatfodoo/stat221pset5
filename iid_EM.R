@@ -42,7 +42,7 @@ EMiid <- function(y, I.par=16, A=RoutingMatrix(16), m.step=100) {
   
   plot(1:length(q.list), q.list)
   
-  return(theta)
+  return(list(theta=theta, q.list=q.list))
   
 }
 

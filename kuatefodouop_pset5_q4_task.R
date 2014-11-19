@@ -27,15 +27,20 @@ if (Sys.getenv("SLURM_JOB_ID") != "") { # Divide computation per tasks
   
   t1.sim <- as.numeric(Sys.time())
   
+  m.step < 2000 # num of steps for EM
+  
   win.id <- seq(from=task.id, to=N.t, by=30)
   theta.part <- replicate(length(win.id), list(t=0,
-                            theta=matrix(data=0, nrow=I.par + 1, ncol=1)), simplify=F)
+                            theta=matrix(data=0, nrow=I.par + 1, ncol=1),
+                            q.list=rep(0, m.step)), simplify=F)
   
   for (i in 1:length(win.id)) {
     t <- win.id[i]
     y.t <- win[[t]]
     theta.part[[i]]$t <- t
-    theta.part[[i]]$theta <- EMiid(y.t, m.step=1000)
+    EM <- EMiid(y.t, m.step=m.step)
+    theta.part[[i]]$theta <- EM$theta
+    theta.part[[i]]$q.list <- EM$q.list
   }
   
   save(theta.part, file=paste("./out/theta_part_", task.id, ".dat", sep=""))
