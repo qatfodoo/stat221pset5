@@ -68,10 +68,11 @@ EMref <- function(y, V=diag(1, 17), I.par=16, A=RoutingMatrix(I.par=16), m.step=
       return(g(e, eta.min1, sigmahat.min1, V, A, y.t))
     }
     sigma.hat <- - solve(hessian(g.t, eta))
-    print(det(hessian(g.t, eta)))
     
     theta.est[[t]] <- list(theta.t=theta.t, q.list=q.list)
   }
+  
+  return(theta.est)
   
 }
 
@@ -85,7 +86,7 @@ Q.ref <- function(theta, m, R, eta, sigma.hat, V) {
 
 g <- function(eta, eta.min1, sigmahat.min1, V, A, y.t) {
   
-  log.prior <- dmvnorm(c(log(theta)), mean=c(eta), sigma=(sigmahat.min1 + V), log=T)
+  log.prior <- dmvnorm(c(eta), mean=c(eta.min1), sigma=(sigmahat.min1 + V), log=T)
   theta <- exp(eta)
   lambda <- theta[1:16, ]
   phi <- theta[17, ]
