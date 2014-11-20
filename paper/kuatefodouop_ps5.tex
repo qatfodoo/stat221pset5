@@ -317,7 +317,7 @@ Integrating on all values of former step states, we have
 \begin{align*}
 \pi_t(\eta_t) = \int p(\eta_{t - 1} | \tilde{Y}_{t - 1}) p(\eta_t | \eta_{t - 1}) d\eta_{t -1 }
 \end{align*}
-With $\eta_t | \eta_{t - 1} \sim Normal(\eta_{t - 1}, V)$. The paper approximates the former state posterior as a normal distribution, ie. $\eta_{t - 1} | \tilde{Y}_{t - 1} \sim Normal(\hat{\eta}_{t - 1}, \hat{\Sigma}_{t -1 })$, where $\hat{\eta}_{t - 1}$ is the previous state posterior mode and $\hat{\Sigma}_{t -1 } = \ddot{g}(\hat{\eta}_t)^{-1}$ (local normal approximation). So the integral for the prior gives us
+With $\eta_t | \eta_{t - 1} \sim Normal(\eta_{t - 1}, V)$. The paper approximates the former state posterior as a normal distribution, ie. $\eta_{t - 1} | \tilde{Y}_{t - 1} \sim Normal(\hat{\eta}_{t - 1}, \hat{\Sigma}_{t -1 })$, where $\hat{\eta}_{t - 1}$ is the previous state posterior mode and $\hat{\Sigma}_{t -1 } = - \ddot{g}(\hat{\eta}_t)^{-1}$ (local normal approximation, there seems to be a mistake in the paper, which forgets the minus sign before the Hessian). So the integral for the prior gives us
 \begin{align*}
 \pi_t(\eta_t) = Normal(\hat{\eta}_{t - 1}, \hat{\Sigma}_{t - 1} + V)
 \end{align*}
@@ -341,6 +341,9 @@ And the refined model EM algorithm proceeds as follows:\\
  }
  \caption{EM algorithm for refined model}
 \end{algorithm}
+\vspace{.2 in}
+\textit{question 1.6} We fit the refined EM model as described in the previous question. To implement the update of $\hat{Sigma}_t$ we use the hessian numerical approximation function from the \texttt{numDeriv} package.
+
 \vspace{.2 in}
 %----------------------------------------------------------------------------------------
 

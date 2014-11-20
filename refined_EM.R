@@ -32,7 +32,7 @@ EMref <- function(y, V=diag(1, 17), I.par=16, A=RoutingMatrix(I.par=16), m.step=
     y.t <- win[[t]]
     
     # Initial guess
-    theta.t <- matrix(data=c(rep(1000, I.par), 1), nrow=(I.par + 1), ncol=1)
+    theta.t <- exp(eta)
     q.list <-c()
     
     for (k in 1:m.step) {
@@ -47,7 +47,8 @@ EMref <- function(y, V=diag(1, 17), I.par=16, A=RoutingMatrix(I.par=16), m.step=
       
       # Current expectation and gradient
       min_Q.k <- function(theta.t) {
-        return( - Q.ref(theta.t, m, R, eta, sigma.hat, V))
+        return( min(- Q.ref(theta.t, m, R, eta, sigma.hat, V),
+                    .Machine$double.xmax))
       }
       opt.k <- optim(theta.t, min_Q.k, method=c("L-BFGS-B"), 
                      lower=0.1, upper=Inf, control=list(maxit=1000))
@@ -66,7 +67,8 @@ EMref <- function(y, V=diag(1, 17), I.par=16, A=RoutingMatrix(I.par=16), m.step=
     g.t <- function(e) {
       return(g(e, eta.min1, sigmahat.min1, V, A, y.t))
     }
-    sigma.hat <- solve(hessian(g.t, eta))
+    sigma.hat <- - solve(hessian(g.t, eta))
+    print(det(hessian(g.t, eta)))
     
     theta.est[[t]] <- list(theta.t=theta.t, q.list=q.list)
   }
